@@ -11,30 +11,37 @@ RUN set -x && \
         libssl-dev \
         libexpat1-dev \
         libavcodec-dev \
-        libgl1-mesa-dev \
-        libqt4-dev
+        wget \
+        less
 
-ADD http://www.makemkv.com/download/makemkv-oss-$VERSION.tar.gz /tmp/makemkv-oss-$VERSION.tar.gz
-RUN tar xzf /tmp/makemkv-oss-$VERSION.tar.gz && \
-    rm /tmp/makemkv-oss-$VERSION.tar.gz && \
-    cd /makemkv-oss-$VERSION && \
-    ./configure && \
-    make && \
-    make install && \
-    rm -rf /makemkv-oss-$VERSION
+RUN mkdir -p /tmp/build \
+    && wget -O /tmp/makemkv-oss-$VERSION.tar.gz http://www.makemkv.com/download/makemkv-oss-$VERSION.tar.gz \
+    && tar -xzf /tmp/makemkv-oss-$VERSION.tar.gz -C /tmp/build/ \
+    && cd /tmp/build/makemkv-oss-$VERSION \
+    && ./configure --disable-gui \
+    && make install \
+    && wget -O /tmp/makemkv-bin-$VERSION.tar.gz http://www.makemkv.com/download/makemkv-bin-$VERSION.tar.gz \
+    && tar -xzf /tmp/makemkv-bin-$VERSION.tar.gz -C /tmp/build/ \
+    && cd /tmp/build/makemkv-bin-$VERSION \
+    && yes yes | make install \
+    && cd / \
+    && ln -sf /usr/bin/makemkvcon /usr/bin/makemkv \
+    && rm -rf /tmp/build
 
-RUN set -x && apt-get install -y less
+RUN set -x && \
+    apt-get purge -y \
+        build-essential \
+        pkg-config \
+        libc6-dev \
+        libssl-dev \
+        libexpat1-dev \
+        libavcodec-dev \
+        wget \
+        less
+    && apt-get install -y \
+        libssl1.0.0 \
+        libexpat1
 
-ADD http://www.makemkv.com/download/makemkv-bin-$VERSION.tar.gz /tmp/makemkv-bin-$VERSION.tar.gz
-RUN tar xzf /tmp/makemkv-bin-$VERSION.tar.gz && \
-    rm /tmp/makemkv-bin-$VERSION.tar.gz && \
-    cd /makemkv-bin-$VERSION && \
-    yes yes | make && \
-    make install && \
-    rm -rf /makemkv-bin-$VERSION
+WORKDIR /data
 
-RUN mkdir /data
-VOLUME ["/data"]
-
-
-#CMD ["/start.sh"]
+CMD ["makemkvcon"]
