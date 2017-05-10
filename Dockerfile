@@ -37,10 +37,12 @@ RUN set -x && \
         libexpat1-dev \
         libavcodec-dev \
         wget \
-        less
+        less \
     && apt-get install -y \
         libssl1.0.0 \
-        libexpat1
+        libexpat1 \
+        libavcodec-ffmpeg56 \
+    && apt-get autoremove -y --purge
 
 WORKDIR /data
 
