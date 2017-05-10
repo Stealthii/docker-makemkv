@@ -12,9 +12,8 @@ RUN set -x && \
         libexpat1-dev \
         libavcodec-dev \
         wget \
-        less
-
-RUN mkdir -p /tmp/build \
+        less \
+    && mkdir -p /tmp/build \
     && wget -O /tmp/makemkv-oss-$VERSION.tar.gz http://www.makemkv.com/download/makemkv-oss-$VERSION.tar.gz \
     && tar -xzf /tmp/makemkv-oss-$VERSION.tar.gz -C /tmp/build/ \
     && cd /tmp/build/makemkv-oss-$VERSION \
@@ -26,10 +25,8 @@ RUN mkdir -p /tmp/build \
     && yes yes | make install \
     && cd / \
     && ln -sf /usr/bin/makemkvcon /usr/bin/makemkv \
-    && rm -rf /tmp/build
-
-RUN set -x && \
-    apt-get purge -y \
+    && rm -rf /tmp/build \
+    && apt-get purge -y \
         build-essential \
         pkg-config \
         libc6-dev \
