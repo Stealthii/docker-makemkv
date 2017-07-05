@@ -1,7 +1,7 @@
 FROM ubuntu:xenial
 MAINTAINER Dan Porter <dpreid@gmail.com>
 
-ENV VERSION 1.10.5
+ENV VERSION 1.10.6
 
 RUN set -x && \
     apt-get update && apt-get install -y --no-install-recommends \
